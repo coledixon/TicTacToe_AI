@@ -9,6 +9,7 @@ const RESULT = {
     playerOWon: SYMBOLS.o,
     tie: 3
 }
+// indicates which HTML is rendered (line 276 within render() method)
 const VIEW = {
     question1: 1,
     question2: 2,
@@ -40,12 +41,12 @@ function Board (options) {
                 ["", "", ""],
                 ["", "", ""]
             ],
-            turn: Math.round(Math.random()), //we set this var randomly for the first move.
+            turn: Math.round(Math.random()), // we set this var randomly for the first move.
         }
     }
   
     function moveCount(board) {
-        //receives a board and returns
+        // receives a board and returns
         let moveCount = 0
         for (let i = 0; i<board.length; i++) {
             for (let j = 0 ; j<board[i].length ; j++) {
@@ -114,7 +115,7 @@ function Board (options) {
             return {result, winningLine};
         }
   
-        //Check for tie
+        // check for tie
         if (moveCount(board)==9) {
             result=RESULT.tie
             return {result, winningLine}
@@ -189,6 +190,7 @@ function Board (options) {
         return availableMovesAndScores[0]
     }
   
+    // HTML board renderer
     function render() {
 
         function getPlayerName(playerSymbol) {
@@ -269,8 +271,9 @@ function Board (options) {
             return `<div id='resultView'> ${htmlBefore} <div id="board">${board}</id> ${htmlAfter} </div>`;
         }
   
-      let html = '';
+      let html = ''; // global HTML var
 
+      // render HTML based on state.view prop
       if (state.view == VIEW.question1) { html = htmlQ1() }
       else if (state.view == VIEW.question2) { html = htmlQ2() }
       else if (state.view == VIEW.result) { html=htmlGameEnd() }
@@ -352,12 +355,14 @@ function Board (options) {
             doComputerMove();
     }
   
+    // options = <div#root> // el = element
+    // wrapping in jQuery creates new instance of object
     $(options.el).on('click', '.btnGroup1', question1Handler)
     $(options.el).on('click', '.btnGroup2', question2Handler)
     $(options.el).on('click', '#gameView .cell', playerMoveHandler)
     $(options.el).on('click', '#resultView', beginGame)
   
-    render ()
+    render()
 }
   
   
