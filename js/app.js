@@ -200,6 +200,7 @@ function Board (options) {
                 return state.players[1].isComputer ? 'Computer' : "Player2"
         }
   
+        // define button parent class
         function buttonHTML(btnGroup, data, text) {
             return `<button type="button" class="btn btn-default btnGroup${btnGroup}" data=${data}>${text}</button>`
         }
@@ -208,6 +209,7 @@ function Board (options) {
             return '&emsp;'.repeat(times)
         }
   
+        // define button child elements
         function htmlQ1() {
             return `<div id="view1"><p>Which do you prefer?\n</p>
                 ${buttonHTML(1, "1player", "Man Against computer")}
@@ -215,6 +217,7 @@ function Board (options) {
             </div>`
         }
   
+        // define button child elements
         function htmlQ2(){
             const html2=`<div id="view2"><p>${!state.players[1].isComputer? "Player 1, <br />" : ""}Which symbols would you like to use?</p>
                 ${buttonHTML(2, "X", "X")}
@@ -230,6 +233,7 @@ function Board (options) {
                 playerName = state.game.turn === 0 ? 'Player1' : 'Player2';
   
             let htmlBefore = `<p>move: ${moveNumber} ${htmlSpaces(5)} turn: ${playerName}</p>`;
+
             let board = state.game._gameBoard.reduce(function(acc,curr,rowIndex) {
                 return acc + `<div id= "row${rowIndex}" class="row">${curr.map((str,colIndex)=>`<div class="cell col${colIndex}" data-row=${rowIndex} data-column=${colIndex}>${str}</div>`).join('')}</div>`
             }, ``);
@@ -260,12 +264,14 @@ function Board (options) {
   
   
             let htmlBefore = `<p>${resultText} ${htmlSpaces(6)} Click to restart game </p> `;
+
             let board = state.game._gameBoard.reduce(function(acc,curr,rowIndex) {
             return acc + `<div id="row${rowIndex}" class="row">${curr.map(
                 (str,colIndex)=>
                 `<div class="cell col${colIndex} ${winningLine.some(arr=>(arraysAreEqual(arr,[rowIndex,colIndex]))) ? "winningLine" : ""}"
                 data-row=${rowIndex} data-column=${colIndex}>${str}</div>`).join('')}</div>`
             }, ``);
+            
             let htmlAfter = `<p>Score: ${htmlSpaces(1)} Player 1 - ${state.players[0].score} ${htmlSpaces(1)} Player 2 - ${state.players[1].score}</p>`;
         
             return `<div id='resultView'> ${htmlBefore} <div id="board">${board}</id> ${htmlAfter} </div>`;
