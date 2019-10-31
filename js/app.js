@@ -9,7 +9,7 @@ const RESULT = {
     playerOWon: SYMBOLS.o,
     tie: 3
 }
-// indicates which HTML is rendered (line 276 within render() method)
+// indicates which HTML is rendered (line 285 within render() method)
 const VIEW = {
     question1: 1,
     question2: 2,
@@ -133,6 +133,7 @@ function Board (options) {
   
     function getBestMove (board, symbol) {
   
+        // duplicate state of existing board
         function copyBoard(board) {
             let copy = [];
 
@@ -145,13 +146,14 @@ function Board (options) {
             return copy
         }
   
+        // parse for open squares on board
         function getAvailableMoves (board) {
             let availableMoves = [];
 
             for (let row = 0 ; row<3 ; row++) {
                 for (let column = 0 ; column<3 ; column++) {
                     if (board[row][column]===""){
-                        availableMoves.push({row, column})
+                        availableMoves.push({row, column}) // insert open available elems to array
                     }
                 }
             }
@@ -166,15 +168,16 @@ function Board (options) {
             let move = availableMoves[i];
             let newBoard = copyBoard(board);
 
-            newBoard = applyMove(newBoard,move, symbol);
+            newBoard = applyMove(newBoard, move, symbol);
             result = getResult(newBoard,symbol).result;
 
+            // set score vals for each applicable move (1=best / 0=tie / -1=bad)
             if (result == RESULT.tie) { score = 0 }
             else if (result == symbol) {
                 score = 1
             }
             else {
-                let otherSymbol = (symbol==SYMBOLS.x)? SYMBOLS.o : SYMBOLS.x
+                let otherSymbol = (symbol==SYMBOLS.x) ? SYMBOLS.o : SYMBOLS.x
                 nextMove = getBestMove(newBoard, otherSymbol)
                 score = - (nextMove.score)
             }
@@ -183,7 +186,7 @@ function Board (options) {
                 availableMovesAndScores.push({move, score})
         }
   
-        availableMovesAndScores.sort((moveA, moveB )=>{
+        availableMovesAndScores.sort((moveA, moveB) => {
             return moveB.score - moveA.score
         })
 
@@ -271,7 +274,7 @@ function Board (options) {
                 `<div class="cell col${colIndex} ${winningLine.some(arr=>(arraysAreEqual(arr,[rowIndex,colIndex]))) ? "winningLine" : ""}"
                 data-row=${rowIndex} data-column=${colIndex}>${str}</div>`).join('')}</div>`
             }, ``);
-            
+
             let htmlAfter = `<p>Score: ${htmlSpaces(1)} Player 1 - ${state.players[0].score} ${htmlSpaces(1)} Player 2 - ${state.players[1].score}</p>`;
         
             return `<div id='resultView'> ${htmlBefore} <div id="board">${board}</id> ${htmlAfter} </div>`;
@@ -285,23 +288,25 @@ function Board (options) {
       else if (state.view == VIEW.result) { html=htmlGameEnd() }
       else {html=htmlGame()}
       
-      // console.log(html)
+      // DEBUG: console.log(html)
       options.el.innerHTML = html
     }
   
+    // eval question1 and re-render HTML
     function question1Handler (ev) {
         state.players[1].isComputer = !($(ev.currentTarget).attr('data')==="2players")
         state.view = VIEW.question2
         render()
     }
   
+    // eval question2 and re-render HTML
     function question2Handler (ev) {
         let player1Symbol = $(ev.currentTarget).attr('data')
         state.players[0].symbol=player1Symbol;
         state.players[1].symbol=(player1Symbol===SYMBOLS.x)? SYMBOLS.o: SYMBOLS.x;
   
         state.view = VIEW.game
-        initGame()
+        initGame() // begin game
         if(state.players[state.game.turn].isComputer)
             doComputerMove()
   
@@ -326,6 +331,7 @@ function Board (options) {
         return board
     }
   
+    // eval move and re-render HTML based of returned results
     function executeTurn(board, move, symbol) {
         if (board[move.row][move.column]!=="") {
             return board
@@ -353,6 +359,7 @@ function Board (options) {
         }
     }
   
+    // initialize elements // re-render HTML // execute game
     function beginGame(){
         initGame()
         state.view = VIEW.game
