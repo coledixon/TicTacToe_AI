@@ -1,4 +1,5 @@
 # TicTacToe_AI
+[FOLLOWING TUTORIAL]
 
 - interactive AI based Tic-Tac-Toe game
 - play against the computer through escalating difficulty
